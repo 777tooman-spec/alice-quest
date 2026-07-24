@@ -9,43 +9,61 @@ body {
     align-items: center;
     min-height: 100vh;
 }
+
+/* Главный контейнер теперь шире, чтобы вместить две колонки */
 .game-container {
     width: 100%;
-    max-width: 430px;
+    max-width: 900px; /* Увеличено, чтобы видео и текст поместились рядом */
     background: #1a1a1e;
     border-radius: 20px;
-    padding: 20px;
+    padding: 25px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    text-align: center;
+    display: flex;
+    gap: 25px; /* Зазор между левой и правой колонкой */
+    align-items: stretch;
     box-sizing: border-box;
 }
+
+/* ЛЕВАЯ КОЛОНКА (Видео) */
 .image-wrapper {
-    width: 100%;
-    aspect-ratio: 9 / 16; /* Фиксирует вертикальный формат видеоролика */
-    max-height: 480px;    /* Ограничивает высоту на ПК, чтобы кнопки помещались */
+    flex: 1; /* Занимает ровно половину ширины */
+    aspect-ratio: 9 / 16;
+    max-height: 550px; /* Оптимальная высота видео на экране ПК */
     border-radius: 15px;
     overflow: hidden;
-    margin-bottom: 15px;
     background: #000;
     display: flex;
     justify-content: center;
     align-items: center;
 }
+
 #alice-video {
     width: 100%;
     height: 100%;
-    object-fit: contain; /* Запрещает обрезать видео, показывая девушку во весь рост */
+    object-fit: contain;
     background: #000;
 }
-.score-container {
-    margin-bottom: 15px;
+
+/* ПРАВАЯ КОЛОНКА (Интерфейс диалога и ответы) */
+.right-column {
+    flex: 1.2; /* Делаем текстовую колонку чуть шире для длинных кнопок */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Центрируем контент по вертикали */
 }
+
+.score-container {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
 .score-label {
     font-size: 16px;
     font-weight: bold;
     margin-bottom: 8px;
     color: #a8a8b0;
 }
+
 .progress-bar {
     width: 100%;
     height: 10px;
@@ -53,46 +71,70 @@ body {
     border-radius: 5px;
     overflow: hidden;
 }
+
 #progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #8a2be2, #4b0082);
     transition: width 0.5s ease;
 }
+
 .dialog-box {
     background: #252529;
-    padding: 15px;
+    padding: 20px;
     border-radius: 12px;
-    margin-bottom: 15px;
-    min-height: 60px;
+    margin-bottom: 20px;
+    min-height: 80px;
     display: flex;
     align-items: center;
     justify-content: center;
+    text-align: left;
 }
+
 #dialog-text {
     margin: 0;
-    font-size: 15px;
+    font-size: 16px;
     line-height: 1.5;
 }
+
 .options-grid {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
 }
+
 .btn-option {
     background: #8a2be2;
     color: white;
     border: none;
-    padding: 12px 10px;
+    padding: 14px 15px;
     font-size: 14px;
     border-radius: 10px;
     cursor: pointer;
     font-weight: 600;
     transition: background 0.2s, transform 0.1s;
-    line-height: 1.3;
+    line-height: 1.4;
+    text-align: left; /* Текст на длинных кнопках теперь аккуратно прижат к левому краю */
 }
+
 .btn-option:hover {
     background: #9932cc;
 }
+
 .btn-option:active {
     transform: scale(0.98);
+}
+
+/* МОБИЛЬНАЯ АДАПТАЦИЯ (Если экран меньше 768px, возвращаем вертикальную ленту) */
+@media (max-width: 768px) {
+    .game-container {
+        flex-direction: column;
+        max-width: 430px;
+        padding: 20px;
+    }
+    .image-wrapper {
+        max-height: 420px;
+    }
+    .btn-option {
+        text-align: center;
+    }
 }
