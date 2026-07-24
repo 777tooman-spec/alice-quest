@@ -8,17 +8,27 @@
 </head>
 <body>
     <div class="game-container">
+        <!-- Левая колонка с видео -->
         <div class="image-wrapper">
             <video id="alice-video" src="neutral.mp4" autoplay muted playsinline></video>
         </div>
-        <div class="score-container">
-            <div class="score-label">Шансы на успех: <span id="score-value">50</span>%</div>
-            <div class="progress-bar"><div id="progress-fill" style="width: 50%;"></div></div>
+
+        <!-- Правая колонка с текстом и кнопками -->
+        <div class="right-column">
+            <!-- Индикатор шансов -->
+            <div class="score-container">
+                <div class="score-label">Шансы на успех: <span id="score-value">50</span>%</div>
+                <div class="progress-bar"><div id="progress-fill" style="width: 50%;"></div></div>
+            </div>
+
+            <!-- Текст диалога -->
+            <div class="dialog-box">
+                <p id="dialog-text">Загрузка игры...</p>
+            </div>
+
+            <!-- Кнопки вариантов ответов -->
+            <div id="options-container" class="options-grid"></div>
         </div>
-        <div class="dialog-box">
-            <p id="dialog-text">Загрузка игры...</p>
-        </div>
-        <div id="options-container" class="options-grid"></div>
     </div>
     <script type="module" src="script.js"></script>
 </body>
