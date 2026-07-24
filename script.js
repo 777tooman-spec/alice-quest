@@ -71,3 +71,143 @@ const script = {
         ]
     }
 };
+const scriptEnd = {
+    5: {
+        textSuccess: 'Звучит как вызов... И мне это чертовски нравится! 😉 Игру в психологию ты прошел. Переходим к конкретике: где будет проходить наше секретное свидание?',
+        textFail: 'Портфель? Статус? Ты думаешь, меня можно купить? Чванство чистой воды. Ладно, давай проверим твой вкус: куда ты меня зовешь?',
+        options: [
+            { text: '«Поедим шаурмы на углу, проверим тебя на простоту и отсутствие короны.»', scoreChange: -30, nextStep: 6 },
+            { text: '«В пафосный ресторан с золотыми ложками и строгим бронированием за месяц.»', scoreChange: -15, nextStep: 6 },
+            { text: '«Секретный спикизи-бар за неприметной дверью, с крутым джазом и неоном для твоих сторис.»', scoreChange: 25, nextStep: 6 },
+            { text: '«В уютный летний кинотеатр под открытым небом, смотреть старую комедию с попкорном.»', scoreChange: 10, nextStep: 6 },
+            { text: '«В хороший итальянский ресторан в центре города. Паста, вино, классика.»', scoreChange: 0, nextStep: 6 }
+        ]
+    },
+    6: {
+        textSuccess: 'Спикизи-бар? Неон и джаз? Ооо, у тебя определенно есть стиль! Ну ладно, интриган. А на каком транспорте мы туда ворвемся?',
+        textFail: 'Золотые ложки или шаурма ради проверки? Какой-то крах крайностей... Ладно, допустим. Как добираться-то будем до места?',
+        options: [
+            { text: '«Заеду за тобой на каршеринге, откроем люк, включим твой любимый плейлист на максимум.»', scoreChange: 25, nextStep: 7 },
+            { text: '«Вызову комфортное такси, чтобы ты могла расслабиться и не думать о дороге.»', scoreChange: 10, nextStep: 7 },
+            { text: '«Встретимся прямо у входа в заведение, так будет удобнее обоим.»', scoreChange: 0, nextStep: 7 },
+            { text: '«Пришлю за тобой VIP-лимузин с караоке, чтобы все соседи обзавидовались.»', scoreChange: -15, nextStep: 7 },
+            { text: '«Пройдемся пешком пару километров через парк. Движение — жизнь, полезно для здоровья.»', scoreChange: -30, nextStep: 7 }
+        ]
+    },
+    7: {
+        textSuccess: 'Ночной город, музыка на полную — идеальный вайб! Ну и финальный штрих перед вердиктом: мне надевать то самое черное платье, от которого все сходят с ума? 😏 Что наденешь сам?',
+        textFail: 'Лимузин или пеший марафон в грозу? Извини, но это мимо... Ладно, последний вопрос перед тем, как я приму решение: в каком луке ты придешь?',
+        options: [
+            { text: '«Я надену классические джинсы и рубашку. Простой, аккуратный стиль.»', scoreChange: 0, nextStep: 'final' },
+            { text: '«Приходи в чем тебе максимально комфортно, хоть в худи. Я подстроюсь под твой стиль.»', scoreChange: 10, nextStep: 'final' },
+            { text: '«Надевай платье, а я буду в стильном кэжуал-костюме и кроссах — сделаем идеальный контраст для фото.»', scoreChange: 25, nextStep: 'final' },
+            { text: '«Я приду в строгом классическом смокинге с бабочкой. Мы должны выглядеть на миллион.»', scoreChange: -15, nextStep: 'final' },
+            { text: '«Приходи поскромнее, не люблю когда на мою девушку все пялятся. А я буду в удобных спортивках.»', scoreChange: -30, nextStep: 'final' }
+        ]
+    }
+};
+
+Object.assign(script, scriptEnd);
+
+function changeVideoSrc(newSrc) {
+    const video = document.getElementById('alice-video');
+    if (video && !video.src.endsWith(newSrc)) {
+        video.src = newSrc;
+        video.play().catch(e => console.log("Ожидание клика пользователя"));
+    }
+}
+
+function updateUI() {
+    const scoreVal = document.getElementById('score-value');
+    const progressFill = document.getElementById('progress-fill');
+    const dialogText = document.getElementById('dialog-text');
+    const optionsContainer = document.getElementById('options-container');
+
+    if (gameState.score > 100) gameState.score = 100;
+    if (gameState.score < 0) gameState.score = 0;
+
+    scoreVal.innerText = gameState.score;
+    progressFill.style.width = gameState.score + '%';
+    optionsContainer.innerHTML = '';
+
+    if (gameState.step === 4 && !gameState.randomEventTriggered) {
+        gameState.randomEventTriggered = true;
+        const randomIndex = Math.floor(Math.random() * randomEvents.length);
+        const event = randomEvents[randomIndex];
+
+        dialogText.innerText = `🚨 ВНЕЗАПНЫЙ ПОВОРОТ СЮЖЕТА! 🚨\n${event.text}`;
+        changeVideoSrc(VIDEOS.neutral);
+
+        event.options.forEach(opt => {
+            let btn = document.createElement('button');
+            btn.className = 'btn-option';
+            btn.innerText = opt.text;
+            btn.onclick = () => {
+                gameState.score += opt.scoreChange;
+                gameState.lastChoiceScore = opt.scoreChange;
+                gameState.step = 4; 
+                updateUI();
+            };
+            optionsContainer.appendChild(btn);
+        });
+        return;
+    }
+
+    // ЛОГИКА ФИНАЛЬНЫХ ВИДЕОРОЛИКОВ
+    if (gameState.step === 'final') {
+        if (gameState.score >= 50) {
+            // Если очков >= 50, Алиса соглашается (включается agreement.mp4)
+            if (gameState.score >= 85) {
+                dialogText.innerText = `🔥 ПОЛНЫЙ ТРИУМФ! Шансы: ${gameState.score}%. Алиса в восторге: «Ты просто нереальный! Умный, тонкий, с потрясающей самоиронией и абсолютно без пафоса. Твой план с баром и музыкой в машине — пушка. Я побежала надевать то самое платье, скидывай адрес, жду вечер!» 🥂✨`;
+            } else {
+                dialogText.innerText = ` 🤔 ШАНС ЕСТЬ. Шансы: ${gameState.score}%. Алиса кокетничает: «Ладно, загадочный мистер. Местами ты, конечно, занудствовал или пытался казаться слишком правильным, но интригу держать умеешь. Давай попробуем поужинать. Но учти: начнешь душнить — сбегу!»`;
+            }
+            changeVideoSrc(VIDEOS.agreement); // Проигрывается ролик согласия один раз [1]
+        } else {
+            // Если очков меньше 50 — полный отказ (включается refusal.mp4)
+            dialogText.innerText = `❌ ПОЛНЫЙ ОТКАЗ. Шансы: ${gameState.score}%. Алиса разочарована: «Не, чувак, интрига умерла, не успев родиться. Ты слишком зациклен на понтах, правилах или, наоборот, включаешь жесткого критика. Ханжество и душнота — это комбо. Я лучше останусь дома. Пока!»`;
+            changeVideoSrc(VIDEOS.refusal);   // Проигрывается ролик отказа один раз
+        }
+        
+        let restartBtn = document.createElement('button');
+        restartBtn.className = 'btn-option';
+        restartBtn.innerText = 'Попробовать еще раз 🔄';
+        restartBtn.style.textAlign = 'center';
+        restartBtn.onclick = () => {
+            gameState = { step: 1, score: 50, lastChoiceScore: 0, randomEventTriggered: false };
+            updateUI();
+        };
+        optionsContainer.appendChild(restartBtn);
+        return;
+    }
+
+    const currentStepData = script[gameState.step];
+    
+    if (gameState.step === 1) {
+        dialogText.innerText = currentStepData.text;
+        changeVideoSrc(VIDEOS.neutral);
+    } else {
+        if (gameState.lastChoiceScore >= 10) {
+            dialogText.innerText = currentStepData.textSuccess;
+            changeVideoSrc(VIDEOS.smiling);
+        } else {
+            dialogText.innerText = currentStepData.textFail;
+            changeVideoSrc(VIDEOS.frowning);
+        }
+    }
+
+    currentStepData.options.forEach(opt => {
+        let btn = document.createElement('button');
+        btn.className = 'btn-option';
+        btn.innerText = opt.text;
+        btn.onclick = () => {
+            gameState.score += opt.scoreChange;
+            gameState.lastChoiceScore = opt.scoreChange;
+            gameState.step = opt.nextStep;
+            updateUI();
+        };
+        optionsContainer.appendChild(btn);
+    });
+}
+
+window.onload = updateUI;
