@@ -1,4 +1,4 @@
-const VIDEOS = { 
+const VIDEOS = {
     neutral: 'neutral.mp4',
     smiling: 'smiling.mp4',
     frowning: 'frowning.mp4'
