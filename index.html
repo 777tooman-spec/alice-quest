@@ -1,1 +1,34 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Квест: Пригласи Алису на ужин</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- Блок с «живым» видеороликом Алисы -->
+        <div class="image-wrapper">
+            <video id="alice-video" src="neutral.mp4" autoplay loop muted playsinline></video>
+        </div>
+
+        <!-- Индикатор шансов -->
+        <div class="score-container">
+            <div class="score-label">Шансы на успех: <span id="score-value">50</span>%</div>
+            <div class="progress-bar"><div id="progress-fill" style="width: 50%;"></div></div>
+        </div>
+
+        <!-- Текст диалога -->
+        <div class="dialog-box">
+            <p id="dialog-text">Загрузка игры...</p>
+        </div>
+
+        <!-- Кнопки вариантов ответов -->
+        <div id="options-container" class="options-grid"></div>
+    </div>
+    <script type="module" src="script.js"></script>
+</body>
+</html>
+
 
